@@ -1,0 +1,66 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.batch_size: 50
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      properties:
+        session.timeout.ms: 10000
+        max.poll.interval.ms: 20000
+
+audit:
+  initial-lookback: P30D
+  candidate-batch-size: 500
+  lock-lease: PT2M
+
+  schedule:
+    cron: "0 0 3 1 1 *"
+    outbox-delay: PT1H
+    outbox-initial-delay: PT1H
+    resync-recovery-delay: PT1H
+    resync-recovery-initial-delay: PT1H
+
+  kafka:
+    concurrency: 1
+
+  notification:
+    recipients:
+      - ops@example.com
+    from: order-audit@example.com
+    max-listed-issues: 5
+    max-collected-digests: 50
+    issues-url: http://localhost:8080/api/audit/issues
+
+  resync:
+    pool-size: 4
+    queue-capacity: 500
+    stale-after: PT1S
+    poll-limit: 50
+
+  outbox:
+    batch-size: 20
+    max-attempts: 3
+    initial-backoff: PT1S
+    max-backoff: PT5S
+    claim-lease: PT30S
+
+sources:
+  order:
+    connect-timeout: PT1S
+    read-timeout: PT1S
+    max-attempts: 2
+    retry-delay: PT0.05S
+  payment:
+    connect-timeout: PT1S
+    read-timeout: PT1S
+    max-attempts: 2
+    retry-delay: PT0.05S
+
+logging:
+  level:
+    com.task.ing.orderaudit: INFO
+    org.apache.kafka: WARN
+    org.testcontainers: INFO

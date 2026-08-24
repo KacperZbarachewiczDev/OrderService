@@ -1,0 +1,13 @@
+[
+  {
+    "eventId": "EVT-20001", "orderId": "ORD-1002", "eventType": "ORDER_CREATED",
+    "occurredAt": "2026-08-19T10:00:00Z", "customerId": "CUST-2", "status": "CREATED",
+    "currency": "PLN", "totalAmount": 320.00,
+    "items": [ { "productId": "P-7", "quantity": 4, "unitPrice": 80.00, "currency": "PLN" } ]
+  },
+  {
+    "eventId": "EVT-20002", "orderId": "ORD-1002", "eventType": "ORDER_COMPLETED",
+    "occurredAt": "2026-08-19T12:00:00Z", "status": "COMPLETED",
+    "currency": "PLN", "totalAmount": 320.00
+  }
+]

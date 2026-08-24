@@ -1,0 +1,62 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: order-audit-postgres
+    environment:
+      POSTGRES_DB: order_audit
+      POSTGRES_USER: order_audit
+      POSTGRES_PASSWORD: order_audit
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U order_audit" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  kafka:
+    image: apache/kafka-native:4.0.0
+    container_name: order-audit-kafka
+    hostname: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: HOST://:9092,CONTROLLER://:9093,INTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,INTERNAL://kafka:9094
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,HOST:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  order-service:
+    image: nginx:alpine
+    container_name: order-audit-order-service
+    ports:
+      - "9101:8080"
+    volumes:
+      - ./local/stubs/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./local/stubs/order:/usr/share/nginx/html:ro
+
+  payment-service:
+    image: nginx:alpine
+    container_name: order-audit-payment-service
+    ports:
+      - "9102:8080"
+    volumes:
+      - ./local/stubs/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./local/stubs/payment:/usr/share/nginx/html:ro
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: order-audit-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"

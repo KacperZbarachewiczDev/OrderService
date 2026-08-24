@@ -1,0 +1,7 @@
+[
+  {
+    "eventId": "PAY-EVT-10001", "paymentId": "PAY-1", "orderId": "ORD-1001",
+    "eventType": "PAYMENT_COMPLETED", "status": "PAID",
+    "amount": 150.00, "currency": "PLN", "occurredAt": "2026-08-19T11:00:00Z"
+  }
+]

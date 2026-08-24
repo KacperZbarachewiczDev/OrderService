@@ -1,0 +1,11 @@
+{
+  "orderId": "ORD-1002",
+  "customerId": "CUST-2",
+  "status": "COMPLETED",
+  "currency": "PLN",
+  "totalAmount": 320.00,
+  "updatedAt": "2026-08-19T12:00:00Z",
+  "items": [
+    { "productId": "P-7", "quantity": 4, "unitPrice": 80.00, "currency": "PLN" }
+  ]
+}
